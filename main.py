@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import os
 from werkzeug.utils import secure_filename
-from flask import Flask,flash,request,redirect,send_file,render_template
+from flask import Flask, flash, request, redirect, send_file, render_template
 from schedule import create_schedule
 UPLOAD_FOLDER = 'uploads/'
 
-#app = Flask(__name__)
+
 app = Flask(__name__, template_folder='templates')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 # Upload API
 @app.route('/', methods=['GET', 'POST'])
@@ -28,20 +29,23 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             print("saved file successfully")
             create_schedule(filename)
-      #send file name as parameter to downlad
-            return redirect('/downloadfile/'+ 'schedule_from_list.csv')
+            # send new output file name as parameter to download
+            return redirect('/downloadfile/'+'schedule_from_list.csv')
 
     return render_template('upload_file.html')
 
+
 # Download API
-@app.route("/downloadfile/<filename>", methods = ['GET'])
+@app.route("/downloadfile/<filename>", methods=['GET'])
 def download_file(filename):
-    return render_template('download.html',value=filename)
+    return render_template('download.html', value=filename)
+
 
 @app.route('/return-files/<filename>')
 def return_files_tut(filename):
     file_path = UPLOAD_FOLDER + filename
     return send_file(file_path, as_attachment=True, attachment_filename='')
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

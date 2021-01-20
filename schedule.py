@@ -3,21 +3,23 @@ import pandas as pd
 import numpy as np
 
 
-def appointment2(slot_data):
-    # companies = slot_data.iloc[:, 3:10].values.tolist()
-    # print(companies)
-    s = slot_data.shape
-    # print(s)
-    # print(slot_data.head())
-    companies = []
+def appointment(slot_data):
+    """ fill the schedule columns for a specific slot in a day
+        @slot_data: pandas dataframe
+                    portion of the original dataframe that contains
+                    only one slot(AM or PM) for a day.
+    """
+    s = slot_data.shape  # dataframe dimensions
+    companies = []  # it stores assigned companies
+
+    # fill with assigned companies
     for i in range(0, s[0]):
         for j in range(3, 10):
-            val = slot_data.iloc[i][j]
-            # print(val)
-            # print(slot_data.iloc[i, 0])
-            if not val in companies and type(val) == str:
+            val = slot_data.iloc[i][j]  # company name
+            if val not in companies and type(val) == str:
                 companies.append(val)
-    print(companies)
+
+    # fill empty columns (hours) with companies
     for c in companies:
         for i in range(s[0]):
             if c in slot_data.iloc[i, 3:10].values.tolist():
@@ -26,52 +28,62 @@ def appointment2(slot_data):
                 else:
                     j = 20
                 space = slot_data.iloc[i, j]
-                print("space: ", space)
+                # list that contains appointments set at the same hour
                 check_list = slot_data.iloc[:i, j].values.tolist()
                 while type(space) == str or c in check_list:
                     j += 1
                     space = slot_data.iloc[i, j]
                     check_list = slot_data.iloc[:i, j].values.tolist()
-                print("value: ", c, "position i: ", i, "position j: ", j, "current value: ", slot_data.iloc[i, j])
-                # print(check_list)
-                slot_data.iloc[i, j] = c
-                print(slot_data.iloc[:,20:30])
-
+                slot_data.iloc[i, j] = c  # assigns hour to a company
 
     return slot_data
 
 
 def create_schedule(filename):
-    pd.set_option('display.max_columns', None)
-    # data = pd.read_csv('./data/Techstars Challenge - Source Data.csv')
-    data = pd.read_csv('./uploads/' + filename)
-    s = data.shape
-    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-    slots = ['AM', 'PM']
-    am_hours = ['8:00 a.m.', '8:20 a.m.', '8:40 a.m.', '9:00 a.m.', '9:20 a.m.', '9:40 a.m.', '10:00 a.m.', '10:20 a.m.', '10:40 a.m.', '11:00 a.m.']
-    pm_hours = ['2:00 p.m.', '2:20 p.m.', '2:40 p.m.', '3:00 p.m.', '3:20 p.m.', '3:40 p.m.', '4:00 p.m.', '4:20 p.m.', '4:40 p.m.', '5:00 p.m.']
+    """
+        creates a schedule for meetings based on a csv file
 
+        filename: csv file where evey row has:
+                            - The name of the mentor
+                            - The day they reserved
+                            (Monday, Tuesday, Wednesday, Thursday, or Friday)
+                            - The time slot (AM, PM)
+                            - The companies manually assigned to each mentor
+        Output: It is a new csv file where new columns were added.
+                Every column is a hour in the calendar, the spots in the
+                calendar contains the company assinged.
+
+    """
+    # read csv file
+    data = pd.read_csv('./uploads/' + filename)  # new pandas dataframe
+
+    days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+
+    slots = ['AM', 'PM']
+
+    am_hours = ['8:00 a.m.', '8:20 a.m.', '8:40 a.m.', '9:00 a.m.',
+                '9:20 a.m.', '9:40 a.m.', '10:00 a.m.', '10:20 a.m.',
+                '10:40 a.m.', '11:00 a.m.']
+    pm_hours = ['2:00 p.m.', '2:20 p.m.', '2:40 p.m.', '3:00 p.m.',
+                '3:20 p.m.', '3:40 p.m.', '4:00 p.m.', '4:20 p.m.',
+                '4:40 p.m.', '5:00 p.m.']
+
+    # add new columns for every 20min
     for col in am_hours:
         data[col] = np.nan
     for col in pm_hours:
         data[col] = np.nan
 
-    m = data.shape
-    # day = data.iloc[0][1]
-    # slot = data.iloc[0][2]
-    # print(day, slot)
-    list_data = []
+    list_data = []  # store dataframes for every slot
     for day in days:
         for slot in slots:
-            print(day)
-            print(slot)
-            # j = i
-            # while data.iloc[i][1] == day and data.iloc[i][2] == slot:
+            # slice dataframe in a specific slot
             slot_data = data[(data['Day'] == day) & (data['AM/PM'] == slot)]
-            # print(slot_data.head())
-            sorted_slot_data = appointment2(slot_data)
-            print(sorted_slot_data)
-            # sorted_slot_data.to_csv('schedule_{}_{}.csv'.format(day, slot), index=False)
+            # generate appointments for one slot
+            sorted_slot_data = appointment(slot_data)
+            # add modified dataframe slot
             list_data.append(sorted_slot_data)
+    # unify dataframes
     data_concat = pd.concat(list_data)
+    # store dataframe as csv file
     data_concat.to_csv('./uploads/schedule_from_list.csv', index=False)
