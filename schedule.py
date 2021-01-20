@@ -43,7 +43,7 @@ def appointment2(slot_data):
 
 
 pd.set_option('display.max_columns', None)
-data = pd.read_csv('./Techstars Challenge - Source Data.csv')
+data = pd.read_csv('./data/Techstars Challenge - Source Data.csv')
 s = data.shape
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 slots = ['AM', 'PM']
@@ -70,7 +70,7 @@ for day in days:
         # print(slot_data.head())
         sorted_slot_data = appointment2(slot_data)
         print(sorted_slot_data)
-        sorted_slot_data.to_csv('schedule_{}_{}.csv'.format(day, slot), index=False)
+        # sorted_slot_data.to_csv('schedule_{}_{}.csv'.format(day, slot), index=False)
         list_data.append(sorted_slot_data)
 data_concat = pd.concat(list_data)
-data_concat.to_csv('schedule_from_list.csv', index=False)
+data_concat.to_csv('./data/schedule_from_list.csv', index=False)

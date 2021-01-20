@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from flask import Flask
 from flask import render_template, request, url_for, make_response
 from werkzeug.utils import secure_filename
@@ -9,16 +10,16 @@ from werkzeug.datastructures import FileStorage
 import requests
 import shutil
 
-from google.cloud import storage
-from io import BytesIO
-from PIL import Image
+# from google.cloud import storage
+# from io import BytesIO
+# from PIL import Image
 
 app = Flask(__name__)
-yolo_ins = init_fun(app.root_path)
+# yolo_ins = init_fun(app.root_path)
 
 #import pdb; pdb.set_trace()
 
-CLOUD_STORAGE_BUCKET = os.environ['CLOUD_STORAGE_BUCKET'] # for deploy
+# CLOUD_STORAGE_BUCKET = os.environ['CLOUD_STORAGE_BUCKET'] # for deploy
 # CLOUD_STORAGE_BUCKET = 'yolo_data' # for local test
 
 
