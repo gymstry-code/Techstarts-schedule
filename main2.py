@@ -2,7 +2,7 @@
 import os
 from werkzeug.utils import secure_filename
 from flask import Flask,flash,request,redirect,send_file,render_template
-
+from schedule import create_schedule
 UPLOAD_FOLDER = 'uploads/'
 
 #app = Flask(__name__)
@@ -27,8 +27,9 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             print("saved file successfully")
+            create_schedule(filename)
       #send file name as parameter to downlad
-            return redirect('/downloadfile/'+ filename)
+            return redirect('/downloadfile/'+ 'schedule_from_list.csv')
 
     return render_template('upload_file.html')
 
