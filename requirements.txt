@@ -13,13 +13,4 @@ MarkupSafe==1.1.1
 numpy==1.19.5
 pandas
 pycrypto==2.6.1
-PyGObject
-python-apt
-python-dateutil
-python-decouple
-pytz
-pyxdg
-SecretStorage
-six
-unattended-upgrades
 Werkzeug
