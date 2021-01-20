@@ -43,7 +43,7 @@ def appointment2(slot_data):
 
 
 pd.set_option('display.max_columns', None)
-data = pd.read_csv('/content/drive/MyDrive/Techstars Challenge - Source Data.csv')
+data = pd.read_csv('./Techstars Challenge - Source Data.csv')
 s = data.shape
 days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
 slots = ['AM', 'PM']
