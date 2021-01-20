@@ -13,7 +13,7 @@ MarkupSafe==1.1.1
 numpy==1.19.5
 pandas
 pycrypto==2.6.1
-PyGObject==3.30.4
+PyGObject
 python-apt==1.8.4.3
 python-dateutil==2.8.1
 python-decouple==3.4
