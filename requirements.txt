@@ -11,7 +11,7 @@ keyring==17.1.1
 keyrings.alt==3.1.1
 MarkupSafe==1.1.1
 numpy==1.19.5
-pandas==1.2.0
+pandas
 pycrypto==2.6.1
 PyGObject==3.30.4
 python-apt==1.8.4.3
