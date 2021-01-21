@@ -28,9 +28,10 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             print("saved file successfully")
-            create_schedule(filename)
+            t = create_schedule(filename)
             # send new output file name as parameter to download
-            return redirect('/downloadfile/'+'schedule_from_list.csv')
+            return redirect('/downloadfile/' +
+                            'schedule_from_list_{}.csv'.format(t))
 
     return render_template('upload_file.html')
 

@@ -1,6 +1,19 @@
 #!/usr/bin/env python3
 import pandas as pd
 import numpy as np
+import time
+import os
+import glob
+
+
+def cleaner():
+    fileList = glob.glob('uploads/*.csv')
+    # Iterate over the list of filepaths & remove each file.
+    for filePath in fileList:
+        try:
+            os.remove(filePath)
+        except OSError:
+            print("Error while deleting file")
 
 
 def appointment(slot_data, num_cols):
@@ -11,7 +24,6 @@ def appointment(slot_data, num_cols):
     """
     s = slot_data.shape  # dataframe dimensions
     companies = []  # it stores assigned companies
-
     # fill with assigned companies
     for i in range(0, s[0]):
         for j in range(3, num_cols):
@@ -22,19 +34,37 @@ def appointment(slot_data, num_cols):
     # fill empty columns (hours) with companies
     for c in companies:
         for i in range(s[0]):
-            if c in slot_data.iloc[i, 3:num_cols].values.tolist():
+            row_hours = slot_data.iloc[i, num_cols:num_cols+20].values.tolist()
+            if c in row_hours:
+                row_empty = False
+            else:
+                row_empty = True
+            last = slot_data.iloc[i, -1]
+            if type(last) == str and c in last.split():
+                last_empty = False
+            else:
+                last_empty = True
+            comp_mentor = slot_data.iloc[i, 3:num_cols].values.tolist()
+            if c in comp_mentor and row_empty and last_empty:
                 if slot_data.iloc[i][2] == 'AM':
                     j = num_cols
+                    limit = num_cols + 10
                 else:
                     j = num_cols + 10
+                    limit = num_cols + 20
                 space = slot_data.iloc[i, j]
-                # list that contains appointments set at the same hour
                 check_list = slot_data.iloc[:i, j].values.tolist()
-                while type(space) == str or c in check_list:
+                while (type(space) == str or c in check_list) and j < limit:
                     j += 1
                     space = slot_data.iloc[i, j]
                     check_list = slot_data.iloc[:i, j].values.tolist()
-                slot_data.iloc[i, j] = c  # assign hour to a company
+                if j < limit:
+                    slot_data.iloc[i, j] = c  # assign hour to a company
+                else:
+                    if type(slot_data.iloc[i, num_cols + 20]) == str:
+                        slot_data.iloc[i, num_cols + 20] += " " + c
+                    else:
+                        slot_data.iloc[i, num_cols + 20] = c
 
     return slot_data
 
@@ -68,14 +98,24 @@ def create_schedule(filename):
                 '3:20 p.m.', '3:40 p.m.', '4:00 p.m.', '4:20 p.m.',
                 '4:40 p.m.', '5:00 p.m.']
 
+    data['Day'] = data['Day'].str.strip()
+    data['AM/PM'] = data['AM/PM'].str.strip()
     num_cols = len(list(data.columns))
-    # add new columns for every 20min
-    for col in am_hours:
-        data[col] = np.nan
-    for col in pm_hours:
-        data[col] = np.nan
+    if num_cols < 24:
+        # add new columns for every 20min
+        for col in am_hours:
+            data[col] = np.nan
+        for col in pm_hours:
+            data[col] = np.nan
+        data['unavailable spot'] = np.nan
+    else:
+        num_cols = 0
+        for c in list(data.columns):
+            if c not in am_hours + pm_hours and c != 'unavailable spot':
+                num_cols += 1
 
-    slot_undefined = data[(data['Day'] == 'Undefined ') & (data['AM/PM'] == 'Undefined ')]
+    slot_undefined = data[(data['Day'] == 'Undefined') &
+                          (data['AM/PM'] == 'Undefined')]
     list_data = []  # store dataframes for every slot
     for day in days:
         for slot in slots:
@@ -89,4 +129,8 @@ def create_schedule(filename):
     # unify dataframes
     data_concat = pd.concat(list_data)
     # store dataframe as csv file
-    data_concat.to_csv('./uploads/schedule_from_list.csv', index=False)
+    t = time.time()
+    cleaner()
+    data_concat.to_csv('./uploads/schedule_from_list_{}.csv'.format(t),
+                       index=False)
+    return t
