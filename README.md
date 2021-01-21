@@ -39,9 +39,9 @@ The app adds new columns. Every new column is the meeting time (interval 20min)
 | ------ | ------ | ----- | ------ | ------ | ------ | ------ | ------ |
 | John Doe | Monday | AM | A inc | B inc |
 
-The app fills every spot with a list created with the companies available. if there is a conflict (same time), the app search for the next empty spot.
-if there are no empty spots for a company with a mentor, the company will be list in an extra column called "unavailable spot".
-The output CSV file can be updated manually (for instance a mentor who had not decided the day, now he/she has decided), We can upload the modified file and get the new schedule.
+The app fills every spot with the available companies. if there is a conflict (same meeting time), the app search for the next empty spot. if there are no empty spots for a company with a mentor (extreme case: for instance if many mentors chose the same day), the company will be list in an extra column called "unavailable spot". 
+The output CSV file can be used as an input too. Also, it can be updated manually (for instance a mentor who had not decided the day, now he/she has decided).
+
 | Name | Day | AM/PM | Company1 | Company2 | 8:00 a.m. | 8:20 a.m. | 8:40 a.m. |
 | ------ | ------ | ----- | ------ | ------ | ------ | ------ | ------ |
 | John Doe | Monday | AM | A inc | B inc | A inc | B inc |
