@@ -7,7 +7,7 @@ Techdule is a tool that helps the Program Associate and the Program Manager to  
 
 # How to use it!
 
-  - Go to the demo app:
+  - Go to the demo app: https://techstars-schedule.herokuapp.com/
   ![index_image](https://github.com/HeimerR/obj_detect/blob/main/imagenes_github/1.png)
   - Drag and drop the csv file
   - Download de new csv file thar contains the schedule
