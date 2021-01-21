@@ -7,6 +7,8 @@ import glob
 
 
 def cleaner():
+    """ delete files in uploads folder
+    """
     fileList = glob.glob('uploads/*.csv')
     # Iterate over the list of filepaths & remove each file.
     for filePath in fileList:
@@ -34,18 +36,20 @@ def appointment(slot_data, num_cols):
     # fill empty columns (hours) with companies
     for c in companies:
         for i in range(s[0]):
+            # verify if the mentor has been assigned a meeting time previously
             row_hours = slot_data.iloc[i, num_cols:num_cols+20].values.tolist()
             if c in row_hours:
                 row_empty = False
             else:
-                row_empty = True
+                row_empty = True  # no assigned previously
             last = slot_data.iloc[i, -1]
             if type(last) == str and c in last.split():
                 last_empty = False
             else:
-                last_empty = True
+                last_empty = True  # no assigned previously
             comp_mentor = slot_data.iloc[i, 3:num_cols].values.tolist()
             if c in comp_mentor and row_empty and last_empty:
+                # define window to work - AM or PM
                 if slot_data.iloc[i][2] == 'AM':
                     j = num_cols
                     limit = num_cols + 10
@@ -54,6 +58,7 @@ def appointment(slot_data, num_cols):
                     limit = num_cols + 20
                 space = slot_data.iloc[i, j]
                 check_list = slot_data.iloc[:i, j].values.tolist()
+                # searh for another position if there are conflicts
                 while (type(space) == str or c in check_list) and j < limit:
                     j += 1
                     space = slot_data.iloc[i, j]
@@ -62,8 +67,10 @@ def appointment(slot_data, num_cols):
                     slot_data.iloc[i, j] = c  # assign hour to a company
                 else:
                     if type(slot_data.iloc[i, num_cols + 20]) == str:
+                        # add to unavailable spot
                         slot_data.iloc[i, num_cols + 20] += " " + c
                     else:
+                        # put in unavailable spot
                         slot_data.iloc[i, num_cols + 20] = c
 
     return slot_data
@@ -98,8 +105,8 @@ def create_schedule(filename):
                 '3:20 p.m.', '3:40 p.m.', '4:00 p.m.', '4:20 p.m.',
                 '4:40 p.m.', '5:00 p.m.']
 
-    data['Day'] = data['Day'].str.strip()
-    data['AM/PM'] = data['AM/PM'].str.strip()
+    data['Day'] = data['Day'].str.strip()  # clean extra spaces
+    data['AM/PM'] = data['AM/PM'].str.strip()  # clean extra spaces
     num_cols = len(list(data.columns))
     if num_cols < 24:
         # add new columns for every 20min
@@ -107,7 +114,7 @@ def create_schedule(filename):
             data[col] = np.nan
         for col in pm_hours:
             data[col] = np.nan
-        data['unavailable spot'] = np.nan
+        data['unavailable spot'] = np.nan  # new column for unavailable spot
     else:
         num_cols = 0
         for c in list(data.columns):
@@ -128,9 +135,9 @@ def create_schedule(filename):
     list_data.append(slot_undefined)
     # unify dataframes
     data_concat = pd.concat(list_data)
-    # store dataframe as csv file
     t = time.time()
-    cleaner()
+    cleaner()  # clean upload folder
+    # store dataframe as csv file
     data_concat.to_csv('./uploads/schedule_from_list_{}.csv'.format(t),
                        index=False)
     return t
