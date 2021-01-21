@@ -1,6 +1,18 @@
 body{
   background: rgba(0,0,0,0.9);
 }
+h1{
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -250px;
+  width: 500px;
+  height: 200px;
+  color: #ffffff;
+  font-family: Arial;
+  text-align: center;
+}
 form{
   position: absolute;
   top: 50%;
