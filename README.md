@@ -33,14 +33,15 @@ The input csv file must have the following structure. The number of companies ca
 | ------ | ------ | ----- | ------ | ------ |
 | John Doe | Monday | AM | A inc | B inc |
 
-The app adds new columns. Every new column is the appointment time (interval 20min)
+The app adds new columns. Every new column is the meeting time (interval 20min)
 
 | Name | Day | AM/PM | Company1 | Company2 | 8:00 a.m. | 8:20 a.m. | 8:40 a.m. |
 | ------ | ------ | ----- | ------ | ------ | ------ | ------ | ------ |
 | John Doe | Monday | AM | A inc | B inc |
 
-The app fills every spot with a list created with the companies availables. if there is a conflict (same time), the app search for the next empty spot.
-
+The app fills every spot with a list created with the companies available. if there is a conflict (same time), the app search for the next empty spot.
+if there are no empty spots for a company with a mentor, the company will be list in an extra column called "unavailable spot".
+The output CSV file can be updated manually (for instance a mentor who had not decided the day, now he/she has decided), We can upload the modified file and get the new schedule.
 | Name | Day | AM/PM | Company1 | Company2 | 8:00 a.m. | 8:20 a.m. | 8:40 a.m. |
 | ------ | ------ | ----- | ------ | ------ | ------ | ------ | ------ |
 | John Doe | Monday | AM | A inc | B inc | A inc | B inc |
