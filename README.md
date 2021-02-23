@@ -1,4 +1,4 @@
-# Techdule - Schedule Generator - Clone
+# Techdule - Schedule Generator - Clone in branch
 
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
